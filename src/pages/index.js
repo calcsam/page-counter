@@ -20,6 +20,8 @@ const inputStyles = {
   fontSize: "1.25rem",
   borderRadius: 4,
   backgroundColor: "#FFF4DB",
+  width: 450,
+  marginRight: 10
 }
 
 const headingAccentStyles = {
@@ -138,13 +140,11 @@ const links = [
 
 // markup
 
-const getNumUrls = async (rawUrl) => {
-  console.log(rawUrl)
-  const url = rawUrl.indexOf(rawUrl.length - 1) === "/" ? rawUrl.concat('sitemap.xml') : rawUrl.concat('/sitemap.xml')
-  const data = await fetch(url).then(response => response.text())
-  console.log(data)
-
-  return data.match(/http/g).length
+const getNumUrls = async (url) => {
+  console.log(url)
+  const response = await fetch('/api/get-pages', {method: 'POST', body: JSON.stringify({url}) })
+  const data = await response.json();
+  return data.numUrls
 }
 
 const IndexPage = () => {
@@ -169,8 +169,14 @@ const IndexPage = () => {
       <button onClick={processClick}>
         Submit
       </button>
+      <br/>
+      <br/>
       {
-        site ? `Your site ${site} has ${numPages} pages` : null
+        site ? 
+          numPages ? 
+            `Your site ${site} has ${numPages} pages` : 
+            `Sorry, we weren't able to find a sitemap.xml file at ${site}` 
+          : null
       }
     </main>
   )
