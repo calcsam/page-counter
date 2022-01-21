@@ -171,10 +171,18 @@ const IndexPage = () => {
       </button>
       <br/>
       <br/>
+      
       {
         site ? 
           numPages ? 
-            `Your site ${site} has ${numPages} pages` : 
+            <p><span style={{ fontSize: "150%" }}> {
+              `Your site ${site} has ${numPages} pages.`}</span>
+              <br/>
+              <br/>
+              <span style={{ fontSize: "50%" }}><i>
+              {`You can verify this by going to ${site.indexOf(site.length - 1) === "/" ? site.concat('sitemap.xml') : site.concat('/sitemap.xml')}, hitting Command-F for "find", and typing in http.`}&nbsp;<a href="/screenshot.jpg">Example</a>
+              </i></span>
+              </p> : 
             `Sorry, we weren't able to find a sitemap.xml file at ${site}` 
           : null
       }
