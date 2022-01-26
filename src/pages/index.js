@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useState } from "react"
 import fetch from "node-fetch"
+import { prependUrl, appendUrl, generateGoogleString } from "../utils"
 
 
 // styles
@@ -144,18 +145,23 @@ const getNumUrls = async (url) => {
   console.log(url)
   const response = await fetch('/api/get-pages', {method: 'POST', body: JSON.stringify({url}) })
   const data = await response.json();
-  return data.numUrls
+  return { numUrls: data.numUrls, numGoogleResults: data.numGoogleResults }
 }
 
 const IndexPage = () => {
   const [inputSite, setInputSite] = useState(null);
   const [site, setSite] = useState(null);
   const [numPages, setNumPages] = useState(null);
+  const [numGoogleResults, setNumGoogleResults] = useState(null);
+  const [processing, setProcessing] = useState(false);
 
   const processClick = async () => { 
-    const numUrls = await getNumUrls(inputSite); 
+    setProcessing(true);
+    const { numUrls, numGoogleResults } = await getNumUrls(inputSite); 
     setNumPages(numUrls); 
-    setSite(inputSite) 
+    setSite(inputSite);
+    setNumGoogleResults(numGoogleResults);
+    setProcessing(false);
   }
   return (
     <main style={pageStyles}>
@@ -174,17 +180,32 @@ const IndexPage = () => {
       
       {
         site ? 
-          numPages ? 
-            <p><span style={{ fontSize: "150%" }}> {
-              `Your site ${site} has ${numPages} pages.`}</span>
+            <p><span style={{ fontSize: "150%" }}>
+              {
+                numPages ?  
+                  <span>
+                    {`Your site `}
+                    <a href={site}>{site}</a>{` has ${numPages} pages, according to its `}
+                    <a href={prependUrl(appendUrl(inputSite))}>sitemap.xml</a>&nbsp;file.&nbsp;
+                  </span> :
+                  <span>
+                    {`Your site `}
+                    <a href={prependUrl(site)}>{site}</a>{` doesn't seem to have a sitemap.xml file. `}
+                  </span> 
+              }
+              <a href={generateGoogleString(prependUrl(inputSite))}>According to Google,</a>
+              {` your site has about ${numGoogleResults}. If these numbers are very different, it may be due to content in multiple languages.`}</span>
               <br/>
               <br/>
               <span style={{ fontSize: "50%" }}><i>
               {`You can verify this by going to ${site.indexOf(site.length - 1) === "/" ? site.concat('sitemap.xml') : site.concat('/sitemap.xml')}, hitting Command-F for "find", and typing in http.`}&nbsp;<a href="/screenshot.jpg">Example</a>
               </i></span>
-              </p> : 
-            `Sorry, we weren't able to find a sitemap.xml file at ${site}` 
-          : null
+              </p>
+          : (
+            processing ? 
+              "Processing.....(usually takes 5 seconds)" : 
+              null
+          )
       }
     </main>
   )
