@@ -11,7 +11,7 @@ const getSitemapUrls = async ( sitemapUrl ) => {
     console.log(resp.redirected)
     if(resp.status === 404) {
         return null
-    } else if (resp.redirected && resp.url.match(/sitemap_index/g).length) {
+    } else if (resp.redirected && resp.url.match(/sitemap_index/g)) {
         const data = await resp.text()
         const urls = data.match(/<loc>http.*</g).map(url => url.slice(5, url.length -1))
         let numUrls = 0;
@@ -33,6 +33,7 @@ const getPage = async (req, res) => {
     console.log(rawUrl)
     const prependedUrl = prependUrl(rawUrl)
     const appendedUrl = appendUrl(prependedUrl)
+    console.log(appendedUrl)
     const numUrls = await getSitemapUrls(appendedUrl)
 
     let googleString = generateGoogleString(prependedUrl);

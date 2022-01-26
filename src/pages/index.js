@@ -197,7 +197,7 @@ const IndexPage = () => {
               {` your site has about ${numGoogleResults}.`}
               <br/>
               <br/>
-              {`If these numbers are very different, it may be due to content in multiple languages. Alternatively, if you've used a "bare domain" without a www, Google may be picking up results from multiple subdomains.`}</span>
+              {`If these numbers are very different, it may be due to content in multiple languages, subdomains, or some other weird reason. Check the results.`}</span>
               <br/>
               <br/>
               <span style={{ fontSize: "50%" }}><i>
