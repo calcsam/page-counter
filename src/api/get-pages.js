@@ -23,7 +23,7 @@ const getSitemapUrls = async ( sitemapUrl ) => {
         return numUrls
     } else {
         const data = await resp.text()
-        return numUrls
+        return data.match(/<loc>/g).length
     }
 }
 

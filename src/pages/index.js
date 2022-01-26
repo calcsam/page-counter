@@ -179,7 +179,7 @@ const IndexPage = () => {
       <br/>
       
       {
-        site ? 
+        processing ? "Processing.... (usually takes about 5 seconds)" : site ? 
             <p><span style={{ fontSize: "150%" }}>
               {
                 numPages ?  
@@ -201,11 +201,7 @@ const IndexPage = () => {
               {`You can verify this by going to ${site.indexOf(site.length - 1) === "/" ? site.concat('sitemap.xml') : site.concat('/sitemap.xml')}, hitting Command-F for "find", and typing in http.`}&nbsp;<a href="/screenshot.jpg">Example</a>
               </i></span>
               </p>
-          : (
-            processing ? 
-              "Processing.....(usually takes 5 seconds)" : 
-              null
-          )
+          : null
       }
     </main>
   )
