@@ -194,7 +194,7 @@ const IndexPage = () => {
                   </span> 
               }
               <a href={generateGoogleString(prependUrl(inputSite))}>According to Google,</a>
-              {` your site has about ${numGoogleResults}. If these numbers are very different, it may be due to content in multiple languages.`}</span>
+              {` your site has about ${numGoogleResults}. If these numbers are very different, it may be due to content in multiple languages. Alternatively, if you've used a "bare domain" without a www, Google may be picking up results from multiple subdomains.`}</span>
               <br/>
               <br/>
               <span style={{ fontSize: "50%" }}><i>
