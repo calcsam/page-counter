@@ -197,7 +197,7 @@ const IndexPage = () => {
               {` your site has about ${numGoogleResults}.`}
               <br/>
               <br/>
-              {`If these numbers are very different, it may be due to content in multiple languages, subdomains, or some other weird reason. Check the results.`}</span>
+              {`The sitemap # is generally more accurate. If these numbers are very different, it may be due to content in multiple languages, subdomains, or some other weird reason. Check the results.`}</span>
               <br/>
               <br/>
               <span style={{ fontSize: "50%" }}><i>
