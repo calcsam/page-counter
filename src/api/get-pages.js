@@ -13,7 +13,7 @@ const getSitemapUrls = async ( sitemapUrl ) => {
         return null
     } else {
         const data = await resp.text()
-        const childSitemaps = [...data.matchAll(/<sitemap>(?:\n|)<loc>(.+)</g)].map(a => a[1])
+        const childSitemaps = data.match(/<sitemap>(?:\n|)<loc>(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#\/?&=]*))<\/loc>/g).map(a => a.slice(14,a.length-6))
         if (childSitemaps && childSitemaps.length) {
             let numUrls = 0;
             let nestedUrlData;        
