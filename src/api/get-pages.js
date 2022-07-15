@@ -26,7 +26,7 @@ const getSitemapUrls = async ( sitemapUrl ) => {
             }
             return numUrls
         }
-        return data.match(/<loc>/g).length
+        return data.match(/<loc>/g) ? data.match(/<loc>/g).length : null
     }
 }
 
