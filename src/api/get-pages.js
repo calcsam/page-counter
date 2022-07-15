@@ -16,8 +16,11 @@ const getSitemapUrls = async ( sitemapUrl ) => {
         const childSitemaps = data.match(/<sitemap>(?:\n|)<loc>(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#\/?&=]*))<\/loc>/g)
         if (childSitemaps && childSitemaps.length) {
             let numUrls = 0;
-            let nestedUrlData;        
+            let nestedUrlData;      
             for (let index = 0; index < childSitemaps.length; index++) {
+                if(!childSitemaps[index]) {
+                    continue
+                }
                 nestedUrlData = await fetch(childSitemaps[index].slice(14,childSitemaps[index].length-6)).then(resp => resp.text())
                 numUrls += (nestedUrlData.match(/<loc>/g) ? nestedUrlData.match(/<loc>/g).length : 0)
             }
