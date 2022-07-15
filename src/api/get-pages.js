@@ -11,18 +11,18 @@ const getSitemapUrls = async ( sitemapUrl ) => {
     console.log(resp.redirected)
     if(resp.status === 404) {
         return null
-    } else if (resp.redirected && resp.url.match(/sitemap_index/g)) {
-        const data = await resp.text()
-        const urls = data.match(/<loc>http.*</g).map(url => url.slice(5, url.length -1))
-        let numUrls = 0;
-        let nestedUrlData;
-        for (let index = 0; index < urls.length; index++) {
-            nestedUrlData = await fetch(urls[index]).then(resp => resp.text())
-            numUrls += nestedUrlData.match(/<loc>/g).length
-        }
-        return numUrls
     } else {
         const data = await resp.text()
+        const childSitemaps = [...data.matchAll(/<sitemap>(?:\n|)<loc>(.+)</g)].map(a => a[1])
+        if (childSitemaps.length) {
+            let numUrls = 0;
+            let nestedUrlData;        
+            for (let index = 0; index < urls.length; index++) {
+                nestedUrlData = await fetch(urls[index]).then(resp => resp.text())
+                numUrls += nestedUrlData.match(/<loc>/g).length
+            }
+            return numUrls
+        }
         return data.match(/<loc>/g).length
     }
 }
