@@ -2,7 +2,13 @@ const fetch = require("node-fetch").default
 const queryString = require('query-string');
 const { prependUrl, appendUrl, generateGoogleString } = require('../utils/index.js')
 
-const userAgent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+const UserAgent = require('user-agents');
+
+const userAgent = new UserAgent({ deviceCategory: 'desktop' })
+
+const userAgents = Array(1000).fill().map(() => userAgent());
+
+
 
 const getSitemapUrls = async ( sitemapUrl ) => {
     const resp = await fetch(sitemapUrl)
@@ -37,16 +43,27 @@ const getPage = async (req, res) => {
     const prependedUrl = prependUrl(rawUrl)
     const appendedUrl = appendUrl(prependedUrl)
     console.log(appendedUrl)
-    const numUrls = await getSitemapUrls(appendedUrl)
+    let numUrls;
+    try {
+       numUrls = await getSitemapUrls(appendedUrl)
+    } catch (e) {
+        console.log(e)
+        numUrls = null
+    }
+    
 
     let googleString = generateGoogleString(prependedUrl);
 
-    const args = { headers: { "user-agent": userAgent }}
+    const args = { headers: { "Accept": "application/json" }}
 
-    const googleData = await fetch(googleString, args).then(resp => resp.text())
-
-    const firstMatch = googleData.match(/<div id="result-stats">About (.*) results/g)
-    const numGoogleResults = firstMatch && firstMatch[0] && firstMatch[0].slice(28)
+    const googleData = await fetch(
+        `https://customsearch.googleapis.com/customsearch/v1?cx=${process.env.SEARCH_API_CX}&exactTerms=%20&siteSearch=${rawUrl}&siteSearchFilter=i&key=${process.env.SEARCH_API_KEY}`, 
+        args
+    ).then(resp => resp.json())
+    
+    // const firstMatch = googleData.match(/<div id="result-stats">About (.*) results/g)
+    // firstMatch && firstMatch[0] && firstMatch[0].slice(28)
+    const numGoogleResults = googleData.queries.request[0].totalResults
     console.log(numGoogleResults)
     console.log(numUrls)
     res.status(200).json({ numUrls, numGoogleResults })
